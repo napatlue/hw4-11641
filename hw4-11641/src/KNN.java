@@ -1,7 +1,7 @@
 
 public class KNN {
-  public SortedArrayList<Pair<Integer,Double>> nnList;
-  public SortedArrayList<Pair<Integer, Double>> getNnList() {
+  public SortedArrayList<Pair<Integer,Float>> nnList;
+  public SortedArrayList<Pair<Integer, Float>> getNnList() {
     return nnList;
   }
 
@@ -9,11 +9,11 @@ public class KNN {
   public int currentSize;
   public KNN(int k) {
     // TODO Auto-generated constructor stub
-    nnList = new SortedArrayList<Pair<Integer,Double>>();
+    nnList = new SortedArrayList<Pair<Integer,Float>>();
     this.maxSize = k;
     this.currentSize = 0;
   }
-  public void Add(Pair<Integer,Double> p){
+  public void Add(Pair<Integer,Float> p){
     nnList.insertSorted(p);
     currentSize++;
     

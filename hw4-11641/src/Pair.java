@@ -38,8 +38,8 @@ public class Pair<L,R> implements Comparable<Object>{
     // TODO Auto-generated method stub
 
     Pair pairo = (Pair) o;
-    double r1 = (Double)this.right;
-    double r2 = (Double)pairo.right;
+    float r1 = (Float)this.right;
+    float r2 = (Float)pairo.right;
     
     if(r1-r2>0)
       return -1;
