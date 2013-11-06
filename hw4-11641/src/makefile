@@ -11,6 +11,10 @@ OUTPUTFILE = predictions.txt
 
 
 CLASSES = \
+	Pair.java \
+	KNN.java \
+	SortedArrayList.java \
+	SparseVectorMap.java \
 	Recommender.java
 
 classes: $(CLASSES:.java=.class)

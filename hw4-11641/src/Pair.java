@@ -41,12 +41,18 @@ public class Pair<L,R> implements Comparable<Object>{
     float r1 = (Float)this.right;
     float r2 = (Float)pairo.right;
     
+    int id1 = (Integer)this.left;
+    int id2 = (Integer)pairo.left;
+    
     if(r1-r2>0)
       return -1;
     else if(r1-r2<0)
       return 1;
-    else
-      return 0;
+    else //tie score
+      if(id1<id2)
+        return -1;
+      else
+        return 1;
   }
 
   public String toString(){

@@ -7,12 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-import no.uib.cipr.matrix.*;
-import no.uib.cipr.matrix.io.MatrixVectorReader;
-import no.uib.cipr.matrix.sparse.LinkedSparseMatrix;
 
 public class Recommender {
 
+  public static Parameter param;
+  
 	public static void main(String[] argv) throws FileNotFoundException, IOException {
 		String trainFile = argv[0];
 		String testFile = argv[1];
@@ -29,11 +28,20 @@ public class Recommender {
 		 
 		//Start timer to get running time
     long startTime = System.nanoTime();
+    
+    //Set Parameter
+    param = new Parameter("cosine", "weight");
      
 		SparseVectorMap userMat = new SparseVectorMap();
-		//SparseVectorMap movMat = new SparseVectorMap();
+		SparseVectorMap movMat = new SparseVectorMap();
 		String infile = trainFile;
-		//file = "a.txt"; 
+		//infile = "a.txt"; 
+		int numRate1 = 0;
+		int numRate3 = 0;
+		int numRate5 = 0;
+		int count = 0;
+		double sumRate = 0;
+		
 		BufferedReader br = new BufferedReader(new FileReader(infile));
 	    try {
 	
@@ -46,11 +54,26 @@ public class Recommender {
 	          int userID = Integer.parseInt(tokens[1]);
 	          int rating = Integer.parseInt(tokens[2]);
 	          
+	          //Statistic Exploration
+	          if(movieID == 4321)
+	          {
+  	          if(rating == 1)
+  	            numRate1++;
+  	          else if (rating == 3)
+  	            numRate3++;
+  	          else if(rating == 5)
+  	            numRate5++;
+  	          
+  	          sumRate+=rating;
+  	          count++;
+	          }
+	          
+	          
 	          //doing imputation now!
 	          rating -= 3;
 	          
-	          userMat.add(userID, movieID, rating);
-	    //      movMat.add(movieID,userID,rating);
+	          //userMat.add(userID, movieID, rating);
+	          movMat.add(movieID,userID,rating);
 	          line = br.readLine();
 	        }
 	       // String everything = sb.toString();
@@ -59,16 +82,38 @@ public class Recommender {
 	    }
 	    
 	    //Preprocessing compute average
-	    userMat.computeAverageStat();
-	    //movMat.computeAverageStat();
+	    //userMat.computeAverageStat();
+	    movMat.computeAverageStat();
+	    //preprocessing again
+	    //userMat.preProcessing();
+	    movMat.preProcessing();
 	    
-	    System.out.println("Number of User :" + userMat.Size());
+	    //System.out.println("Number of User :" + userMat.Size());
 	    //System.out.println("Number of mov :" + movMat.Size());
 	    
+	    
+	    //Output stat
+	    System.out.println("Number of movies rated" + count);
+	    System.out.println("Number of rating 1: "+numRate1);
+	    System.out.println("Number of rating 3: "+numRate3);
+	    System.out.println("Number of rating 5: "+numRate5);
+	    
+	    sumRate = sumRate/count;
+	    System.out.println("Average rating: "+sumRate);
+	    
+	   // double pp = userMat.predictRatingMean(1234576, 1, 5);
+	    
 	    //Predict rating
+	    //testFile = "test-small.csv";
+	    
+      //double pp = userMat.predictRatingMean(6, 1, 4);
+      //System.out.println(pp);
+	    //testFile = "test.txt";
+	   // movMat.predictRating(4321, 1, 5);
 	    
 	    BufferedReader br2 = new BufferedReader(new FileReader(testFile));
 	    BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
+	    int i =1;
       try {
   
           String line = br2.readLine();
@@ -79,10 +124,13 @@ public class Recommender {
             int movieID = Integer.parseInt(tokens[0]);
             int userID = Integer.parseInt(tokens[1]);
 
-            //predict using user similarity
-            double pred = userMat.predictRatingCos(userID, movieID, 10);
-            System.out.println(pred);
-           // bw.write(pred+"\n");
+            
+            //double pred = userMat.predictRating(userID, movieID, 10);
+            double pred = movMat.predictRating(movieID, userID, 10);
+            
+            
+            System.out.println(pred + "\t" + ++i);
+            bw.write(pred+"\n");
            // result += pred + "\n"; 
             line = br2.readLine();
           }
@@ -92,7 +140,8 @@ public class Recommender {
           bw.close();
       }
 	    
-	   // double pred = userMat.predictRatingCos(529849, 7, 10);
+	   //double pred = userMat.predictRatingCos(529849, 7, 10);
+      //double pred = userMat.predictRatingMean(6, 1, 3);
 	    //System.out.println(pred);
       long endTime = System.nanoTime();
       long duration = endTime - startTime;
