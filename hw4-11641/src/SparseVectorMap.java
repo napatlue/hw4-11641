@@ -92,7 +92,10 @@ public class SparseVectorMap {
           {
             sim = computeCosineSimilarity(v1, v2, indexToKey.get(rowQ), indexToKey.get(i));
           }
-          
+          else if(Recommender.param.sim == Parameter.SimilarityOption.PCC)
+          {
+            sim = computePCC(v1, v2, indexToKey.get(rowQ), indexToKey.get(i));
+          } 
           
           
           
@@ -241,6 +244,10 @@ public class SparseVectorMap {
      // System.out.println("ui= "+ui + " weight= "+weight);
       result += ui*weight;
     }
+    if(Math.abs(sumW - 0) < 0.0000000001)
+    {
+      return avgMap.get(key1)+3;
+    }
     result = result/sumW; //Normalize it
     
     
@@ -356,6 +363,7 @@ public class SparseVectorMap {
   
   public float computePCC(Map<Integer,Integer> v1, Map<Integer,Integer> v2, int keyX, int keyY){
     float result = 0;
+    int count = 0;
     Iterator itr1 = v1.entrySet().iterator();
     while (itr1.hasNext()) {
         Map.Entry pairs = (Map.Entry)itr1.next();
@@ -374,10 +382,17 @@ public class SparseVectorMap {
           float xsig = sdMap.get(keyX);
           float ysig = sdMap.get(keyY);
           
-          
-          
-          result += (xx/xsig)*(yy/ysig);
+          if(xsig!=0 && ysig!=0)
+          {
+            result += (xx/xsig)*(yy/ysig);
+            
+          }
+          count++;
         }
+    }
+    if(count < Recommender.param.minSimItem)
+    {
+      return -1;
     }
     return result;
   }

@@ -10,7 +10,8 @@ public class Parameter {
   
   SimilarityOption sim;
   CombineOption com;
-  public Parameter(String sim,String com) {
+  int minSimItem;
+  public Parameter(String sim,String com,int min) {
     // TODO Auto-generated constructor stub
     sim = sim.toLowerCase();
     com = com.toLowerCase();
@@ -45,6 +46,7 @@ public class Parameter {
       System.out.println("Wrong combine option");
       System.exit(1);
     }
+    this.minSimItem = min;
   }
 
 }

@@ -30,7 +30,7 @@ public class Recommender {
     long startTime = System.nanoTime();
     
     //Set Parameter
-    param = new Parameter("cosine", "weight");
+    param = new Parameter("pcc", "mean",7);
      
 		SparseVectorMap userMat = new SparseVectorMap();
 		SparseVectorMap movMat = new SparseVectorMap();
@@ -88,6 +88,9 @@ public class Recommender {
 	    //userMat.preProcessing();
 	    movMat.preProcessing();
 	    
+	    //compute sd for pcc
+	    movMat.computeSD();
+	    
 	    //System.out.println("Number of User :" + userMat.Size());
 	    //System.out.println("Number of mov :" + movMat.Size());
 	    
@@ -109,7 +112,7 @@ public class Recommender {
       //double pp = userMat.predictRatingMean(6, 1, 4);
       //System.out.println(pp);
 	    //testFile = "test.txt";
-	   // movMat.predictRating(4321, 1, 5);
+	    //movMat.predictRating(8619, 270264, 5);
 	    
 	    BufferedReader br2 = new BufferedReader(new FileReader(testFile));
 	    BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile));
@@ -129,7 +132,7 @@ public class Recommender {
             double pred = movMat.predictRating(movieID, userID, 10);
             
             
-            System.out.println(pred + "\t" + ++i);
+            //System.out.println(pred + "\t" + ++i);
             bw.write(pred+"\n");
            // result += pred + "\n"; 
             line = br2.readLine();
